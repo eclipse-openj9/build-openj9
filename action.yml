@@ -1,0 +1,16 @@
+name: 'build-openj9'
+description: 'Build different version of openjdk with openj9'
+author: 'Sophia Guo'
+inputs:
+  version:              # change this
+    description: 'openjdk version'
+    default: '8'
+  usePersonalRepo:
+    description: 'A boolean value ("true" or "false") on whether the personalRepo should be used.'
+    required: false
+    default: false
+outputs:
+  BuildJDKDir: # build jdk images directory
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
