@@ -1,0 +1,29 @@
+name: "nightly build-openj9 jdk 8"
+on:
+  schedule:
+    - cron:  '30 21 * * 1-5'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-16.04]
+    steps:
+    - uses: eclipse/build-openj9@v1
+      id: buildJDK
+      with: 
+        version: 8
+    - name: AQA
+      uses: AdoptOpenJDK/run-aqa@v1
+      env:
+        TEST_JDK_HOME: ${{ steps.buildJDK.outputs.BuildJDKDir }}
+      with:
+        build_list: 'functional'
+        target: '_sanity'
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: test_output
+        path: ./**/test_output_*/
