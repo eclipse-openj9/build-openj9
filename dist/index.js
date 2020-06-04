@@ -3247,58 +3247,41 @@ function installLinuxDepends(version) {
         if (`${ubuntuVersion}` === '16.04') {
             yield exec.exec('sudo apt-get update');
             yield exec.exec('sudo apt-get install -qq -y --no-install-recommends \
-      software-properties-common \
       python-software-properties \
       realpath');
         }
-        else {
-            yield exec.exec('sudo apt-get update');
-            yield exec.exec('sudo apt-get install -qq -y --no-install-recommends \
-      software-properties-common');
-        }
-        //Note gcc-multilib is needed on github environment
         yield exec.exec(`sudo apt-get update`);
         yield exec.exec('sudo apt-get install -qq -y --no-install-recommends \
+    software-properties-common \
     autoconf \
-    ca-certificates \
-    ccache \
-    cmake \
     cpio \
-    file \
-    git \
-    git-core \
     libasound2-dev \
     libcups2-dev \
     libdwarf-dev \
     libelf-dev \
     libfontconfig1-dev \
     libfreetype6-dev \
-    libnuma-dev \
     libx11-dev \
     libxext-dev \
     libxrender-dev \
     libxt-dev \
     libxtst-dev \
     make \
+    libnuma-dev \
     nasm \
     pkg-config \
     ssh \
-    unzip \
-    wget \
-    gcc-multilib \
-    zip');
-        yield io.rmRF(`/var/lib/apt/lists/*`);
+    gcc-multilib');
         if (version === '8') {
             yield exec.exec('sudo add-apt-repository ppa:openjdk-r/ppa');
             yield exec.exec(`sudo apt-get update`);
             yield exec.exec('sudo apt-get install -qq -y --no-install-recommends openjdk-7-jdk');
-            yield io.rmRF(`/var/lib/apt/lists/*`);
         }
         else {
             yield exec.exec(`sudo apt-get update`);
             yield exec.exec('sudo apt-get install -qq -y --no-install-recommends libxrandr-dev');
-            yield io.rmRF(`/var/lib/apt/lists/*`);
         }
+        yield io.rmRF(`/var/lib/apt/lists/*`);
         //install cuda9
         const cuda9 = yield tc.downloadTool('https://developer.nvidia.com/compute/cuda/9.0/Prod/local_installers/cuda_9.0.176_384.81_linux-run');
         yield exec.exec(`sudo sh ${cuda9} --silent --toolkit --override`);

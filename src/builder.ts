@@ -72,51 +72,35 @@ async function installLinuxDepends(version: string): Promise<void> {
     await exec.exec('sudo apt-get update')
     await exec.exec(
       'sudo apt-get install -qq -y --no-install-recommends \
-      software-properties-common \
       python-software-properties \
       realpath'
     )
-  } else {
-    await exec.exec('sudo apt-get update')
-    await exec.exec(
-      'sudo apt-get install -qq -y --no-install-recommends \
-      software-properties-common'
-    )
   }
-  //Note gcc-multilib is needed on github environment
+  
   await exec.exec(`sudo apt-get update`)
   await exec.exec(
     'sudo apt-get install -qq -y --no-install-recommends \
+    software-properties-common \
     autoconf \
-    ca-certificates \
-    ccache \
-    cmake \
     cpio \
-    file \
-    git \
-    git-core \
     libasound2-dev \
     libcups2-dev \
     libdwarf-dev \
     libelf-dev \
     libfontconfig1-dev \
     libfreetype6-dev \
-    libnuma-dev \
     libx11-dev \
     libxext-dev \
     libxrender-dev \
     libxt-dev \
     libxtst-dev \
     make \
+    libnuma-dev \
     nasm \
     pkg-config \
     ssh \
-    unzip \
-    wget \
-    gcc-multilib \
-    zip'
+    gcc-multilib'
   )
-  await io.rmRF(`/var/lib/apt/lists/*`)
 
   if (version === '8') {
     await exec.exec('sudo add-apt-repository ppa:openjdk-r/ppa')
@@ -124,15 +108,14 @@ async function installLinuxDepends(version: string): Promise<void> {
     await exec.exec(
       'sudo apt-get install -qq -y --no-install-recommends openjdk-7-jdk'
     )
-    await io.rmRF(`/var/lib/apt/lists/*`)
   } else {
     await exec.exec(`sudo apt-get update`)
     await exec.exec(
       'sudo apt-get install -qq -y --no-install-recommends libxrandr-dev'
     )
-    await io.rmRF(`/var/lib/apt/lists/*`)
   }
-
+  await io.rmRF(`/var/lib/apt/lists/*`)
+  
   //install cuda9
   const cuda9 = await tc.downloadTool('https://developer.nvidia.com/compute/cuda/9.0/Prod/local_installers/cuda_9.0.176_384.81_linux-run')
   await exec.exec(`sudo sh ${cuda9} --silent --toolkit --override`)
@@ -229,10 +212,10 @@ async function getBootJdk(version: string): Promise<void> {
       }
     } else {
       // windows jdk is zip file
-    const tempDir = path.join(tempDirectory, 'temp_' + Math.floor(Math.random() * 2000000000))
-    await tc.extractZip(bootjdkJar, `${tempDir}`)
-    const tempJDKDir = path.join(tempDir, fs.readdirSync(tempDir)[0])
-    await exec.exec(`mv ${tempJDKDir}/* ${workDir}/bootjdk`)
+      const tempDir = path.join(tempDirectory, 'temp_' + Math.floor(Math.random() * 2000000000))
+      await tc.extractZip(bootjdkJar, `${tempDir}`)
+      const tempJDKDir = path.join(tempDir, fs.readdirSync(tempDir)[0])
+      await exec.exec(`mv ${tempJDKDir}/* ${workDir}/bootjdk`)
     }
     await io.rmRF(`${bootjdkJar}`)
   }
