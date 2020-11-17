@@ -31,7 +31,8 @@ inputs:
     required: false
     default: false
 outputs:
-  BuildJDKDir: # build jdk images directory
+  BuildJDKDir:
+    description: 'build jdk images directory'
 runs:
   using: 'node12'
   main: 'dist/index.js'
