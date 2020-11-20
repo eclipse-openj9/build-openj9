@@ -19,22 +19,31 @@
 #
 # SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR LicenseRef-GPL-2.0 WITH Assembly-exception
 ###############################################################################
-name: "test branch tip"
+name: "nightly build-openj9"
 on:
-  push:
-    branches-ignore:
-      - '**'
+  schedule:
+    - cron:  '30 21 * * 1-5'
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2016, ubuntu-16.04, macos-latest]
+        os: [ubuntu-16.04, macos-10.15, windows-2016]
+        version: [8, 11, 15]
+        exclude:
+        # excludes jdk 8 on Mac( not valid), jdk8 on windows( not enabled), jdk11 on windows( issue opened)
+          - os: macos-10.15
+            version: 8
+          - os: windows-2016
+            version: 8 
+          - os: windows-2016
+            version: 11 #https://github.com/eclipse/build-openj9/issues/2
     steps:
     - uses: actions/checkout@v1
-    - uses: ./
+    - uses: eclipse/build-openj9@v1
       id: buildJDK
       with: 
-        version: 11
+        version: ${{ matrix.version }}
     - run: ${{ steps.buildJDK.outputs.BuildJDKDir }}/bin/java -version
