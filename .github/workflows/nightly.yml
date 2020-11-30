@@ -40,6 +40,8 @@ jobs:
             version: 8 
           - os: windows-2016
             version: 11 #https://github.com/eclipse/build-openj9/issues/2
+          - os: macos-10.15
+            version: 15 #https://github.com/ibmruntimes/openj9-openjdk-jdk15/issues/47#issuecomment-736017181
     steps:
     - uses: actions/checkout@v1
     - uses: eclipse/build-openj9@v1
