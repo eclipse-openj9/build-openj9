@@ -256,9 +256,13 @@ async function getSource(
     const repo = process.env.GITHUB_REPOSITORY as string
     let branch = ''
     if ('GITHUB_HEAD_REF' in process.env) {
+      core.info('GIT_HUB_REF is exist')
       branch = process.env.GITHUB_HEAD_REF as string
+      core.info(`branh is ${branch}`)
     } else {
+      core.info('GITHUB_REF is exist')
       const ref = process.env.GITHUB_REF as string
+      core.info(`ref is ${ref}`)
       branch = ref.substr(ref.lastIndexOf('/') + 1)
     }
 
