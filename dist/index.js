@@ -3532,16 +3532,12 @@ function getSource(openj9Version, usePersonalRepo) {
         if (usePersonalRepo) {
             const repo = process.env.GITHUB_REPOSITORY;
             let branch = '';
-            if ('GITHUB_HEAD_REF' in process.env) {
-                core.info('GIT_HUB_REF is exist');
-                branch = process.env.GITHUB_HEAD_REF;
-                core.info(`branh is ${branch}`);
+            if (process.env.GITHUB_HEAD_REF === '') {
+                const ref = process.env.GITHUB_REF;
+                branch = ref.substr(ref.lastIndexOf('/') + 1);
             }
             else {
-                core.info('GITHUB_REF is exist');
-                const ref = process.env.GITHUB_REF;
-                core.info(`ref is ${ref}`);
-                branch = ref.substr(ref.lastIndexOf('/') + 1);
+                branch = process.env.GITHUB_HEAD_REF;
             }
             if (repo.includes(`/${openj9Version}`)) {
                 openjdkOpenj9Repo = repo;
