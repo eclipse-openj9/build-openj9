@@ -255,11 +255,11 @@ async function getSource(
   if (usePersonalRepo) {
     const repo = process.env.GITHUB_REPOSITORY as string
     let branch = ''
-    if ('GITHUB_HEAD_REF' in process.env) {
-      branch = process.env.GITHUB_HEAD_REF as string
-    } else {
+    if (process.env.GITHUB_HEAD_REF === '') {
       const ref = process.env.GITHUB_REF as string
       branch = ref.substr(ref.lastIndexOf('/') + 1)
+    } else {
+      branch = process.env.GITHUB_HEAD_REF as string
     }
 
     if (repo.includes(`/${openj9Version}`)) {
