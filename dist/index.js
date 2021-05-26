@@ -3492,8 +3492,12 @@ function getBootJdk(version) {
         if (parseInt(bootJDKVersion) > 8) {
             let bootjdkJar;
             // TODO: issue open openj9,mac, 10 ga : https://api.adoptopenjdk.net/v3/binary/latest/10/ga/mac/x64/jdk/openj9/normal/adoptopenjdk doesn't work
-            if (`${bootJDKVersion}` === '10' && `${targetOs}` === 'mac') {
-                bootjdkJar = yield tc.downloadTool(`https://github.com/AdoptOpenJDK/openjdk10-binaries/releases/download/jdk-10.0.2%2B13.1/OpenJDK10U-jdk_x64_mac_hotspot_10.0.2_13.tar.gz`);
+            if (`${bootJDKVersion}` === '10') {
+                //JDK 11 require a latest jdk11 as boot JVMhttps://github.com/eclipse-openj9/build-openj9/issues/25#issuecomment-848354452
+                bootjdkJar = yield tc.downloadTool(`https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk11u-2021-05-07-07-34/OpenJDK11U-jdk_x64_linux_openj9_2021-05-07-07-34.tar.gz`);
+                if (`${targetOs}` === 'mac') {
+                    bootjdkJar = yield tc.downloadTool(`https://github.com/AdoptOpenJDK/openjdk10-binaries/releases/download/jdk-10.0.2%2B13.1/OpenJDK10U-jdk_x64_mac_hotspot_10.0.2_13.tar.gz`);
+                }
             }
             else {
                 bootjdkJar = yield tc.downloadTool(`https://api.adoptopenjdk.net/v3/binary/latest/${bootJDKVersion}/ga/${targetOs}/x64/jdk/openj9/normal/adoptopenjdk`);
@@ -3503,7 +3507,7 @@ function getBootJdk(version) {
                 yield exec.exec(`sudo tar -xzf ${bootjdkJar} -C ./bootjdk --strip=3`);
             }
             else if (`${targetOs}` === 'linux') {
-                if (`${bootJDKVersion}` === '10') {
+                if (`${bootJDKVersion}` === '10' && `${targetOs}` === 'mac') {
                     yield exec.exec(`sudo tar -xzf ${bootjdkJar} -C ./bootjdk --strip=2`); // TODO : issue open as this is packaged differently
                 }
                 else {
