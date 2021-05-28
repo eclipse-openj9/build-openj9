@@ -127,7 +127,7 @@ async function installLinuxDepends(version: string): Promise<void> {
     await exec.exec('sudo add-apt-repository ppa:openjdk-r/ppa')
     await exec.exec(`sudo apt-get update`)
     await exec.exec(
-      'sudo apt-get install -qq -y --no-install-recommends openjdk-7-jdk'
+      'sudo apt-get install -qq -y --no-install-recommends openjdk-8-jdk'
     )
   } else {
     await exec.exec(`sudo apt-get update`)

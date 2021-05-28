@@ -3414,7 +3414,7 @@ function installLinuxDepends(version) {
         if (version === '8') {
             yield exec.exec('sudo add-apt-repository ppa:openjdk-r/ppa');
             yield exec.exec(`sudo apt-get update`);
-            yield exec.exec('sudo apt-get install -qq -y --no-install-recommends openjdk-7-jdk');
+            yield exec.exec('sudo apt-get install -qq -y --no-install-recommends openjdk-8-jdk');
         }
         else {
             yield exec.exec(`sudo apt-get update`);
