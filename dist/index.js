@@ -3435,6 +3435,7 @@ function installLinuxDepends(version) {
         yield exec.exec(`sudo ln -s /usr/include/x86_64-linux-gnu/* /usr/local/include`);
         yield exec.exec(`sudo ln -sf /usr/local/bin/g++-7.3 /usr/bin/g++`);
         yield exec.exec(`sudo ln -sf /usr/local/bin/gcc-7.3 /usr/bin/gcc`);
+        process.env.LIBRARY_PATH = `/usr/lib/x86_64-linux-gnu:${process.env.LIBRARY_PATH}`;
     });
 }
 function installWindowsDepends(version) {
