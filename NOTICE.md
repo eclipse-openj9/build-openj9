@@ -22,14 +22,12 @@ https://www.eclipse.org/legal/epl-2.0, or the Apache License, Version 2.0 which
 is available at https://www.apache.org/licenses/LICENSE-2.0. This Source Code
 may also be made available under the following Secondary Licenses when the
 conditions for such availability set forth in the Eclipse Public License v. 2.0
-are satisfied: GPL-2.0 with Assembly Exception which is available at
-https://openjdk.java.net/legal/assembly-exception.html, and (secondary) GPL-2.0
-with Classpath-exception-2.0 which is available at GNU General Public License
-v2.0 w/Classpath exception',
-'https://www.gnu.org/software/classpath/license.html.
+are satisfied: GPL-2.0 with Classpath-exception-2.0 which is available at
+https://openjdk.java.net/legal/gplv2+ce.html, and GPL-2.0 with Assembly
+Exception which is available at
+https://openjdk.java.net/legal/assembly-exception.html.
 
-SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH
-OpenJDK-assembly-exception-1.0 OR GPL-2.0-with-classpath-exception
+SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0 OR GPL-2.0-only WITH OpenJDK-assembly-exception-1.0
 
 ## Source Code
 
@@ -95,8 +93,7 @@ dlmalloc (2.8.3)
 
 doxygen (1.8.3.1)
 
-* License: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR
-   LicenseRef-GPL-2.0 WITH Assembly-exception
+* License: EPL-2.0 OR Apache-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0 OR GPL-2.0-only WITH OpenJDK-assembly-exception-1.0
 * Project: http://doxygen.org
 * Source: ftp://ftp.stack.nl/pub/users/dimitri/Doxygen-1.8.3.1.dmg
 
