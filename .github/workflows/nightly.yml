@@ -41,7 +41,7 @@ jobs:
           - os: windows-2016
             version: 11 #https://github.com/eclipse/build-openj9/issues/2
     steps:
-    - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e # v1.2.0
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
     - uses: eclipse/build-openj9@v1
       id: buildJDK
       with: 
