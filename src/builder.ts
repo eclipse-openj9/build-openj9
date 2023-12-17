@@ -48,14 +48,15 @@ if (!tempDirectory) {
 
 export async function buildJDK(
   version: string,
-  usePersonalRepo: boolean
+  usePersonalRepo: boolean,
+  specifiedReposMap: Map<string, string>
 ): Promise<void> {
   const openj9Version = `openj9-openjdk-jdk${version}`
   await installDependencies(version)
   process.chdir(`${workDir}`)
   await getBootJdk(version)
   process.chdir(`${workDir}`)
-  await getSource(openj9Version, usePersonalRepo)
+  await getSource(openj9Version, usePersonalRepo, specifiedReposMap)
   await setConfigure(version, openj9Version)
   await exec.exec(`make all`)
   await printJavaVersion(version, openj9Version)
@@ -249,7 +250,8 @@ async function getBootJdk(version: string): Promise<void> {
 
 async function getSource(
   openj9Version: string,
-  usePersonalRepo: boolean
+  usePersonalRepo: boolean,
+  specifiedReposMap: Map<string, string>
 ): Promise<void> {
   let openjdkOpenj9Repo = `ibmruntimes/${openj9Version}`
   let openjdkOpenj9Branch = 'openj9'
@@ -277,7 +279,31 @@ async function getSource(
       openj9Repo = repo
       openj9Branch = branch
     } else {
-      core.error(`${repo} is not one of openj9-openjdk-jdk8|11|12..., openj9, omr`)
+      //parsing personal openj9Repo, openj9 Repo, openj9-omrRepo openj9-openjdkRepo'
+      for (let [key, value] of specifiedReposMap) {
+        const personalRepo = parseRepoBranch(value)[0]
+        const personalBranch = parseRepoBranch(value)[1]
+        switch(key) { 
+          case "openj9Repo": { 
+            openj9Repo = personalRepo
+            openj9Branch = personalBranch
+            break; 
+          } 
+          case "openj9-omrRepo": { 
+            omrRepo = personalRepo
+            omrBranch = personalBranch
+            break; 
+          }
+          case "openj9-openjdkRepo": {
+            openjdkOpenj9Repo = personalRepo
+            openjdkOpenj9Branch = personalBranch
+          }
+          default: { 
+             //statements; 
+             break; 
+          }
+        } 
+      }
     }
   }
 
@@ -383,4 +409,9 @@ async function getOsVersion(): Promise<string> {
     }
   }
   return osVersion
+}
+
+function parseRepoBranch(repoBranch: string): string[] {
+  const tempRepo = repoBranch.replace(/\s/g, '')
+  return tempRepo.split(':')
 }

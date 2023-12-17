@@ -25,13 +25,18 @@ import * as builder from './builder'
 async function run(): Promise<void> {
   try {
     const version = core.getInput('version', {required: false})
-    const repository = core.getInput('repository', {required: false})
-    const ref = core.getInput('ref', {required: false})
     const usePersonalRepo = core.getInput('usePersonalRepo') === 'true'
-    if (repository.length === 0 && ref.length !== 0) {
-      core.error(`Please give repository name`)
+    let specifiedReposMap = new Map()
+    if (usePersonalRepo) {
+      const repos: string[] = ['openj9Repo', 'openj9-omrRepo', 'openj9-openjdkRepo']
+      for (let repo of repos) {
+        const tempRepo = core.getInput(repo, { required: false })
+        if (tempRepo.length !== 0) {
+          specifiedReposMap.set(repo, tempRepo)
+        }
+      }
     }
-    await builder.buildJDK(version, usePersonalRepo)
+    await builder.buildJDK(version, usePersonalRepo, specifiedReposMap)
   } catch (error) {
     core.setFailed(error.message)
   }
