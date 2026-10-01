@@ -3335,14 +3335,14 @@ if (!tempDirectory) {
     }
     tempDirectory = path.join(baseLocation, 'actions', 'temp');
 }
-function buildJDK(version, usePersonalRepo) {
+function buildJDK(version, usePersonalRepo, specifiedReposMap) {
     return __awaiter(this, void 0, void 0, function* () {
         const openj9Version = `openj9-openjdk-jdk${version}`;
         yield installDependencies(version);
         process.chdir(`${workDir}`);
         yield getBootJdk(version);
         process.chdir(`${workDir}`);
-        yield getSource(openj9Version, usePersonalRepo);
+        yield getSource(openj9Version, usePersonalRepo, specifiedReposMap);
         yield setConfigure(version, openj9Version);
         yield exec.exec(`make all`);
         yield printJavaVersion(version, openj9Version);
@@ -3526,7 +3526,7 @@ function getBootJdk(version) {
         }
     });
 }
-function getSource(openj9Version, usePersonalRepo) {
+function getSource(openj9Version, usePersonalRepo, specifiedReposMap) {
     return __awaiter(this, void 0, void 0, function* () {
         let openjdkOpenj9Repo = `ibmruntimes/${openj9Version}`;
         let openjdkOpenj9Branch = 'openj9';
@@ -3557,7 +3557,31 @@ function getSource(openj9Version, usePersonalRepo) {
                 openj9Branch = branch;
             }
             else {
-                core.error(`${repo} is not one of openj9-openjdk-jdk8|11|12..., openj9, omr`);
+                //parsing personal openj9Repo, openj9 Repo, openj9-omrRepo openj9-openjdkRepo'
+                for (let [key, value] of specifiedReposMap) {
+                    const personalRepo = parseRepoBranch(value)[0];
+                    const personalBranch = parseRepoBranch(value)[1];
+                    switch (key) {
+                        case "openj9Repo": {
+                            openj9Repo = personalRepo;
+                            openj9Branch = personalBranch;
+                            break;
+                        }
+                        case "openj9-omrRepo": {
+                            omrRepo = personalRepo;
+                            omrBranch = personalBranch;
+                            break;
+                        }
+                        case "openj9-openjdkRepo": {
+                            openjdkOpenj9Repo = personalRepo;
+                            openjdkOpenj9Branch = personalBranch;
+                        }
+                        default: {
+                            //statements; 
+                            break;
+                        }
+                    }
+                }
             }
         }
         yield exec.exec(`git clone -b ${openjdkOpenj9Branch} https://github.com/${openjdkOpenj9Repo}.git`);
@@ -3668,6 +3692,10 @@ function getOsVersion() {
         }
         return osVersion;
     });
+}
+function parseRepoBranch(repoBranch) {
+    const tempRepo = repoBranch.replace(/\s/g, '');
+    return tempRepo.split(':');
 }
 
 
@@ -4768,13 +4796,18 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const version = core.getInput('version', { required: false });
-            const repository = core.getInput('repository', { required: false });
-            const ref = core.getInput('ref', { required: false });
             const usePersonalRepo = core.getInput('usePersonalRepo') === 'true';
-            if (repository.length === 0 && ref.length !== 0) {
-                core.error(`Please give repository name`);
+            let specifiedReposMap = new Map();
+            if (usePersonalRepo) {
+                const repos = ['openj9Repo', 'openj9-omrRepo', 'openj9-openjdkRepo'];
+                for (let repo of repos) {
+                    const tempRepo = core.getInput(repo, { required: false });
+                    if (tempRepo.length !== 0) {
+                        specifiedReposMap.set(repo, tempRepo);
+                    }
+                }
             }
-            yield builder.buildJDK(version, usePersonalRepo);
+            yield builder.buildJDK(version, usePersonalRepo, specifiedReposMap);
         }
         catch (error) {
             core.setFailed(error.message);

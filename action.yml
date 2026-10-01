@@ -30,6 +30,15 @@ inputs:
     description: 'A boolean value ("true" or "false") on whether the personalRepo should be used.'
     required: false
     default: false
+  openj9Repo:
+    description: 'openj9 Repo, example: eclipse-openj9/openj9:master'
+    required: false
+  openj9-omrRepo:
+    description: 'openj9-omr Repo, example: eclipse-openj9/openj9-omr:openj9'
+    required: false
+  openj9-openjdkRepo:
+    description: 'ibmruntimes extension Repo, example: ibmruntimes/openj9-openjdk-jdk11:openj9 '
+    required: false
 outputs:
   BuildJDKDir:
     description: 'build jdk images directory'
