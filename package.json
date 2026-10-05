@@ -39,7 +39,7 @@
     "eslint-plugin-jest": "^27.6.3",
     "jest": "^30.5.2",
     "jest-circus": "^30.5.2",
-    "js-yaml": "^4.3.2",
+    "js-yaml": "^5.4.2",
     "prettier": "^3.9.9",
     "ts-jest": "^29.4.14",
     "typescript": "^5.2.2"
